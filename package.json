@@ -11,14 +11,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:markdown-to-pdf.createpdf"
 	],
 	"main": "./extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "markdown-to-pdf.createpdf",
+				"title": "Create PDF from Markdown"
 			}
 		]
 	},
@@ -38,7 +38,9 @@
 		"vscode-test": "^1.3.0"
 	},
 	"dependencies": {
-		"html-pdf": ">=2.2.0"
+		"puppeteer": "^2.1.1"
 	},
-	"extensionDependencies": ["yzhang.markdown-all-in-one"]
+	"extensionDependencies": [
+		"yzhang.markdown-all-in-one"
+	]
 }
