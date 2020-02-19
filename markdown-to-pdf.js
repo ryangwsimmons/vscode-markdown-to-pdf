@@ -22,6 +22,12 @@ function activate(context) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let createPDF = vscode.commands.registerCommand('markdown-to-pdf.createpdf', function () {
+		//Check that the current document is a markdown document
+		if (vscode.window.activeTextEditor.document.languageId != "markdown") {
+			vscode.window.showErrorMessage("Active document is not a Markdown document.");
+			return;
+		}
+
 		//Execute the command from Markdown All-In-One to convert Markdown to HTML
 		vscode.commands.executeCommand('markdown.extension.printToHtml');
 
@@ -59,7 +65,7 @@ function activate(context) {
 			if (os.platform() == 'win32') {
 				exec("del \"" + htmlPath + "\"", (err, stdout, stderr) => {
 					if (err) {
-						vscode.window.showErrorMessage("Could not create PDF from Markdown.");
+						vscode.window.showErrorMessage("Error while creating PDF from Markdown.");
 						console.error(err);
 					}
 				});
@@ -67,7 +73,7 @@ function activate(context) {
 			else {
 				exec("rm \"" + htmlPath + "\"", (err, stdout, stderr) => {
 					if (err) {
-						vscode.window.showErrorMessage("Could not create PDF from Markdown.");
+						vscode.window.showErrorMessage("Error while creating PDF from Markdown.");
 						console.error(err);
 					}
 				});
