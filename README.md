@@ -8,6 +8,4 @@ A Visual Studio Code extension that converts markdown files to PDFs.
 - ["puppeteer" Node.js module](https://www.npmjs.com/package/puppeteer)
 
 ## To-Do
-- Get conversion from HTML to PDF working
-- Ensuring PDFs are saved in the correct location (same directory as `.md` file)
 - Deleting HTML document after PDF is created

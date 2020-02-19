@@ -29,21 +29,28 @@ function activate(context) {
 		//Get the path of the PDF document
 		let pdfPath = htmlPath.substring(0, htmlPath.lastIndexOf(".")) + ".pdf";
 
+		//Define function for converting HTML document to PDF
+		let toPDF = async function() {
+			const browser = await puppeteer.launch();
+			const document = await browser.newPage();
+			await document.goto("file://" + htmlPath);
+			await document.pdf({
+				path: pdfPath,
+				format: 'Letter'
+			});
+			await browser.close();
+		};
+
 		//Convert the HTML document to a PDF
 		try{
-			async () => {
-				const browser = await puppeteer.launch();
-				const document = await browser.newPage();
-				await document.goto("file://" + htmlPath);
-				await document.pdf({
-					path: pdfPath,
-					format: 'Letter'
-				});
-				await browser.close();
-			}
+			toPDF();
+			
+			//Delete the HTML document
+			fs.unlinkSync(htmlPath);
 		}
 		catch (err) {
 			vscode.window.showErrorMessage("Could not convert Markdown to PDF.");
+			console.log(err);
 		}
 	});
 
