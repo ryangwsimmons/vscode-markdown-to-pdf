@@ -2,11 +2,14 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 
-//Import fs module and reference it with the alias fs
-const fs = require('fs');
-
 //Import puppeteer module and reference it with the alias puppeteer
 const puppeteer = require('puppeteer');
+
+//Import child_processes module and reference it with the alias exec
+const {exec} = require('child_process');
+
+//Import os module and reference it with the alias os
+const os = require('os');
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -30,28 +33,46 @@ function activate(context) {
 		let pdfPath = htmlPath.substring(0, htmlPath.lastIndexOf(".")) + ".pdf";
 
 		//Define function for converting HTML document to PDF
-		let toPDF = async function() {
+		let toPDF = async function(callback) {
 			const browser = await puppeteer.launch();
 			const document = await browser.newPage();
 			await document.goto("file://" + htmlPath);
 			await document.pdf({
 				path: pdfPath,
-				format: 'Letter'
+				format: 'Letter',
+				printBackground: true,
+				margin: {
+					top: "0.5in",
+					right: "0.5in",
+					bottom: "0.5in",
+					left: "0.5in"
+				}
 			});
 			await browser.close();
+
+			callback();
 		};
 
-		//Convert the HTML document to a PDF
-		try{
-			toPDF();
-			
+		//Convert the HTML document to a PDF, then delete the HTML document
+		toPDF(() => {
 			//Delete the HTML document
-			fs.unlinkSync(htmlPath);
-		}
-		catch (err) {
-			vscode.window.showErrorMessage("Could not convert Markdown to PDF.");
-			console.log(err);
-		}
+			if (os.platform() == 'win32') {
+				exec("del \"" + htmlPath + "\"", (err, stdout, stderr) => {
+					if (err) {
+						vscode.window.showErrorMessage("Could not create PDF from Markdown.");
+						console.error(err);
+					}
+				});
+			}
+			else {
+				exec("rm \"" + htmlPath + "\"", (err, stdout, stderr) => {
+					if (err) {
+						vscode.window.showErrorMessage("Could not create PDF from Markdown.");
+						console.error(err);
+					}
+				});
+			}
+		});
 	});
 
 	context.subscriptions.push(createPDF);
