@@ -1,6 +1,6 @@
 # Markdown to PDF
 
-A Visual Studio Code extension that converts markdown files to PDFs.
+A Visual Studio Code extension that converts markdown files to PDFs. Supports math notation.
 
 ## Dependencies
 
